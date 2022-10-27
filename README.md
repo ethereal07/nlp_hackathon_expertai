@@ -17,3 +17,7 @@
 - The text from the articles in the csv file are being processed using the methods offered in expert.ai's NL-API
 - The text is tokenized into sentences and then into words and lemmatized using the API
 - We are trying to segregate the texts in the articles into prevalent topics relevant to ESG themes
+
+
+##Output
+![Alt text](./word_cloud.png "Topic modelling output!")
