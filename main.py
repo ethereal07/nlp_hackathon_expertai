@@ -12,5 +12,5 @@ def get_text_for_nlp(art_date):
     
 get_text_for_nlp(date)
 
-tm_gensim_lda()
-tm_truncated_svd()
+# tm_gensim_lda()
+# tm_truncated_svd()

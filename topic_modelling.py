@@ -17,8 +17,8 @@ from matplotlib import pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.colors as mcolors
 
-os.environ["EAI_USERNAME"] = 'megha.naik@rakuten.com'
-os.environ["EAI_PASSWORD"] = 'Rakuten@123'
+os.environ["EAI_USERNAME"] = '***'
+os.environ["EAI_PASSWORD"] = '***'
 
 client = ExpertAiClient()
 
