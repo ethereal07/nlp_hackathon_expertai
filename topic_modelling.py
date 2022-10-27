@@ -1,41 +1,39 @@
 import pandas as pd
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+import os
+from expertai.nlapi.cloud.client import ExpertAiClient
 from string import punctuation
-from nltk.tokenize import word_tokenize
-from collections import Counter
-import operator
-import numpy as np
-from textblob import TextBlob
+from nltk.tokenize import word_tokenize, sent_tokenize
 import warnings
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
-import gensim
 from gensim.models.lsimodel import LsiModel
 from gensim import corpora
 from pprint import pprint
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
-import string
 from gensim.models.ldamodel import LdaModel
 from gensim.models.coherencemodel import CoherenceModel
 from matplotlib import pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.colors as mcolors
+
+os.environ["EAI_USERNAME"] = 'megha.naik@rakuten.com'
+os.environ["EAI_PASSWORD"] = 'Rakuten@123'
+
+client = ExpertAiClient()
+
 warnings.filterwarnings('ignore')
 
-
 def get_dataset():
-    datafile = './data/scraped_data.csv'
-    dataset = pd.read_csv(datafile)
+    datafile = 'data/scraped_data.csv'
+    dataset =  pd.read_csv(datafile)
     document = dataset.text 
-    news_df = pd.DataFrame({'document': document})
-    tokenized_doc = news_df['document'].str.replace("[^a-zA-Z#]", " ")
+    news_df = pd.DataFrame({'document':document})
+    tokenized_doc = news_df['document'].str.replace("[^a-zA-Z#]"," ")
     return tokenized_doc
 
 def clean_doc(text):
-    text = " ".join([word.lower() for word in text.split() if len(word) > 3])
+    text = " ".join([word.lower() for word in text.split() if len(word)>3])
     return text
 
 def remove_stopwords(text):
@@ -86,15 +84,36 @@ def tm_truncated_svd():
     for x in final_topic_list:
         print(x)
 
+
+def lemma_data_expert_ai(text):
+    output = client.specific_resource_analysis(
+        body={"document": {"text": text}},
+        params={'language': language, 'resource': 'disambiguation'
+                })
+
+    text = " ".join([token.lemma for token in output.tokens])
+    return text
+
+# text = lemma_data_expert_ai(text)
+# print(text)
+
+
+
 # Function to lemmatize and remove the stopwords
 def clean(doc):
     stop = set(stopwords.words('english'))
     exclude = set(punctuation)
-    lemma = WordNetLemmatizer()
     stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
     punc_free = "".join(ch for ch in stop_free if ch not in exclude)
-    normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
-    return normalized
+    # normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
+    list_of_docs = punc_free.tolist()
+    new_list = []
+    for row in list_of_docs:
+        text = sent_tokenize(row)
+        for doc in text:
+            t = lemma_data_expert_ai(doc)
+            new_list.append(t)
+    return new_list
 
 
 def tm_gensim_lda():
@@ -165,4 +184,5 @@ def tm_gensim_lda():
     plt.axis('off')
     plt.margins(x=0, y=0)
     plt.tight_layout()
-    fig.savefig('./word_cloud1.png')
+    fig.savefig('word_cloud.png')
+

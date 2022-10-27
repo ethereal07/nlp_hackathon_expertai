@@ -3,9 +3,9 @@ pandas==1.5.0
 gdelt==0.1.10.5.3
 openpyxl
 beautifulsoup4==4.11.1
-nltk
 textblob
 gensim
 sklearn
 matplotlib
 wordcloud
+expertai-nlapi
